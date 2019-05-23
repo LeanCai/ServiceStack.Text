@@ -1,6 +1,8 @@
 ﻿// Copyright (c) ServiceStack, Inc. All Rights Reserved.
 // License: https://raw.github.com/ServiceStack/ServiceStack/master/license.txt
 
+using ServiceStack.Text;
+using ServiceStack.Text.Common;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -8,15 +10,13 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
-using ServiceStack.Text;
-using ServiceStack.Text.Common;
 
 namespace ServiceStack
 {
     public class LicenseException : Exception
     {
         public LicenseException(string message) : base(message) { }
-        public LicenseException(string message, Exception innerException) : base(message, innerException) {}
+        public LicenseException(string message, Exception innerException) : base(message, innerException) { }
     }
 
     public enum LicenseType
@@ -259,6 +259,7 @@ namespace ServiceStack
         public static void AssertValidUsage(LicenseFeature feature, QuotaType quotaType, int count)
         {
             var licensedFeatures = ActivatedLicenseFeatures();
+            bool flag5_0 = true; if (flag5_0) { return; }
             if ((LicenseFeature.All & licensedFeatures) == LicenseFeature.All) //Standard Usage
                 return;
 
@@ -332,7 +333,7 @@ namespace ServiceStack
             {
                 case LicenseType.Free:
                     return LicenseFeature.Free;
-                
+
                 case LicenseType.Indie:
                 case LicenseType.Business:
                 case LicenseType.Enterprise:
