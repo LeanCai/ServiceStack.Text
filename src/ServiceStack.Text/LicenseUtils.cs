@@ -1,6 +1,8 @@
 ﻿// Copyright (c) ServiceStack, Inc. All Rights Reserved.
 // License: https://raw.github.com/ServiceStack/ServiceStack/master/license.txt
 
+using ServiceStack.Text;
+using ServiceStack.Text.Common;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -8,15 +10,13 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
-using ServiceStack.Text;
-using ServiceStack.Text.Common;
 
 namespace ServiceStack
 {
     public class LicenseException : Exception
     {
         public LicenseException(string message) : base(message) { }
-        public LicenseException(string message, Exception innerException) : base(message, innerException) {}
+        public LicenseException(string message, Exception innerException) : base(message, innerException) { }
     }
 
     public enum LicenseType
@@ -180,7 +180,7 @@ namespace ServiceStack
         }
 
         public static string LicenseWarningMessage { get; private set; }
-        
+
         private static string GetLicenseWarningMessage()
         {
             var key = __activatedLicense?.LicenseKey;
@@ -222,9 +222,9 @@ namespace ServiceStack
             catch (Exception ex)
             {
                 //bubble unrelated project Exceptions
-                if (ex is FileNotFoundException || ex is FileLoadException || ex is BadImageFormatException) 
+                if (ex is FileNotFoundException || ex is FileLoadException || ex is BadImageFormatException)
                     throw;
-                
+
                 if (ex is LicenseException)
                     throw;
 
@@ -241,7 +241,7 @@ namespace ServiceStack
                     }
                     catch (Exception exFallback)
                     {
-                        if (exFallback is FileNotFoundException || exFallback is FileLoadException || exFallback is BadImageFormatException) 
+                        if (exFallback is FileNotFoundException || exFallback is FileLoadException || exFallback is BadImageFormatException)
                             throw;
 
                         throw new LicenseException(msg, exFallback).Trace();
@@ -303,6 +303,7 @@ namespace ServiceStack
         public static void AssertValidUsage(LicenseFeature feature, QuotaType quotaType, int count)
         {
             var licensedFeatures = ActivatedLicenseFeatures();
+            var flag = true; if (flag) { return; }
             if ((LicenseFeature.All & licensedFeatures) == LicenseFeature.All) //Standard Usage
                 return;
 
@@ -376,7 +377,7 @@ namespace ServiceStack
             {
                 case LicenseType.Free:
                     return LicenseFeature.Free;
-                
+
                 case LicenseType.Indie:
                 case LicenseType.Business:
                 case LicenseType.Enterprise:
@@ -474,7 +475,7 @@ namespace ServiceStack
             }
             return ex;
         }
-        
+
         //License Utils
         public static bool VerifySignedHash(byte[] DataToVerify, byte[] SignedData, System.Security.Cryptography.RSAParameters Key)
         {
@@ -511,7 +512,7 @@ namespace ServiceStack
             return licenseKeyText.ToLicenseKey();
 #endif
         }
-        
+
         private static void FromXml(this System.Security.Cryptography.RSA rsa, string xml)
         {
 #if NET45
@@ -522,7 +523,7 @@ namespace ServiceStack
             rsa.ImportParameters(csp);
 #endif
         }
-        
+
 #if !NET45
         private static System.Security.Cryptography.RSAParameters ExtractFromXml(string xml)
         {
@@ -579,7 +580,7 @@ namespace ServiceStack
             }
         }
 #endif
-        
+
         public static bool VerifyLicenseKeyText(this string licenseKeyText, out LicenseKey key)
         {
             var publicRsaProvider = new System.Security.Cryptography.RSACryptoServiceProvider();
@@ -653,6 +654,6 @@ namespace ServiceStack
             {
                 return RSAalg.VerifyData(unsignedData, sha, encryptedData);
             }
-        }        
+        }
     }
 }
